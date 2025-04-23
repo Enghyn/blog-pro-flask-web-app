@@ -109,7 +109,7 @@ def detalle_mensaje(id):
     if request.method == "POST" and comentarioForm.validate_on_submit():
         comentarioForm.populate_obj(comentario_nuevo)
         comentario_nuevo.blog_id = id
-        comentario_nuevo.usuario = session["usuario"]
+        #comentario_nuevo.usuario = session["usuario"]
         db.session.add(comentario_nuevo)
         db.session.commit()
         return redirect(url_for("detalle_mensaje", id=id))
@@ -122,7 +122,7 @@ def agregar_mensaje():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
     if request.method == "POST" and blogForm.validate_on_submit():
         blogForm.populate_obj(blog)
-        blog.usuario = session["usuario"]
+        #blog.usuario = session["usuario"]
         blog.fecha = date.today()
         db.session.add(blog)
         db.session.commit()
@@ -137,7 +137,7 @@ def editar_mensaje(id):
     blogForm = BlogForm(obj=blog)
     if request.method == "POST" and blogForm.validate_on_submit():
         blogForm.populate_obj(blog)
-        blog.usuario = session["usuario"]
+        #blog.usuario = session["usuario"]
         blog.fecha = date.today()
         db.session.commit()
         return redirect(url_for("inicio"))

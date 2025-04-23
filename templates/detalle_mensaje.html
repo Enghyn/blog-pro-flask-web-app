@@ -32,7 +32,7 @@
                         <a href="{{ url_for('inicio') }}" class="btn btn-secondary btn-sm rounded-pill fw-semibold shadow-sm">
                             ← Regresar
                         </a>
-                    {%if usuario.usuario == blog.usuario%}
+                    {%if usuario.usuario == blog.autor.usuario%}
                         <a href="#" class="btn btn-warning">Editar</a>
                         <a href="#" class="btn btn-danger">Eliminar</a>
                     {%endif%}
@@ -63,7 +63,7 @@
                         <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
                             <div class="card-body py-2 px-3">
                                 <div class="d-flex justify-content-between">
-                                    <strong class="text-info">{{ comentario.usuario }}</strong>
+                                    <strong class="text-info">{{ comentario.autor.usuario }}</strong>
                                 </div>
                                 <p class="mb-0 small text-muted">{{ comentario.cuerpo }}</p>
                             </div>

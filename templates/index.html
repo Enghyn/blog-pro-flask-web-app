@@ -31,13 +31,13 @@
               <div class="card-body">
                 <h5 class="card-title">{{ blog.titulo }}</h5>
                 <p class="card-text text-muted small mb-2">
-                  Por <strong>{{ blog.usuario }}</strong> • 
+                  Por <strong>{{ blog.autor.usuario }}</strong> • 
                   <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
                   <span>comentarios: {{ blog.comentarios | length }}</span>
                 </p>
                 <p class="card-text">{{ blog.cuerpo[:200] }}...</p>
                 <a href="/detalle_mensaje/{{ blog.id }}" class="btn btn-primary btn-sm">Ver más</a>
-                {% if usuario.usuario == blog.usuario %}
+                {% if usuario.usuario == blog.autor.usuario %}
                   <a href="/editar_mensaje/{{blog.id}}" class="btn btn-warning btn-sm">Editar</a>
                   <a href="/eliminar_mensaje/{{blog.id}}" class="btn btn-danger btn-sm">Eliminar</a>
                 {% endif %}
