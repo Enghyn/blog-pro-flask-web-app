@@ -6,13 +6,14 @@ from forms import UserForm, BlogForm, ComentarioForm
 from datetime import date
 
 app = Flask(__name__)
-#USER_DB = "postgres"
-#PASS_DB = "admin"
-#URL_DB = "localhost"
-#NAME_DB = "blog_flask_db"
-#FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
+USER_DB = "postgres"
+PASS_DB = "admin"
+URL_DB = "localhost"
+NAME_DB = "blog_flask_db"
+FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
+msj = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
+app.config["SQLALCHEMY_DATABASE_URI"] = FULL_URL_DB
 
 
 
@@ -68,28 +69,34 @@ def ver_usuario():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
     return render_template("ver_usuario.html", usuario=usuario)
 
-@app.route("/editar_usuario/<string:data>", methods=["GET","POST"])
-def editar_usuario(data):
+@app.route("/editar_nombre", methods=["GET","POST"])
+def editar_nombre():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
     if not usuario:
         return abort(404)
     usuarioForm = UserForm(obj=usuario)
     error_usuario = None
     if request.method == "POST" and usuarioForm.validate_on_submit():
+        usuario_existente = User.query.filter_by(usuario=usuarioForm.usuario.data).first()
+        if not usuario_existente and usuario.usuario != usuarioForm.usuario.data:
+            usuarioForm.populate_obj(usuario)
+            db.session.commit()
+            session["usuario"] = usuario.usuario
+            return redirect(url_for("ver_usuario"))
+        error_usuario = "Usuario ya existente"
+    return render_template("editar_nombre.html", form=usuarioForm, error=error_usuario)
+
+@app.route("/editar_contraseña", methods=["GET","POST"])
+def editar_contraseña():
+    usuario = User.query.filter_by(usuario=session["usuario"]).first()
+    if not usuario:
+        return abort(404)
+    usuarioForm = UserForm(obj=usuario)
+    if request.method == "POST" and usuarioForm.validate_on_submit():
         usuarioForm.populate_obj(usuario)
-        if usuario.usuario != usuarioForm.usuario.data:
-            usuario_existente = User.query.filter_by(usuario=usuarioForm.usuario.data).first()
-            if usuario_existente is not None:
-                error_usuario = "Usuario ya existente"
-                return editar_usuario(data="nombre")
         db.session.commit()
-        session["usuario"] = usuario.usuario
         return redirect(url_for("ver_usuario"))
-    if data == "nombre":
-        return render_template("editar_nombre.html", form=usuarioForm, error=error_usuario)
-    elif data == "contraseña":
-        return render_template("editar_contraseña.html", form=usuarioForm)
-    return abort(404)
+    return render_template("editar_contraseña.html", form=usuarioForm)
 
 @app.route("/eliminar_usuario")
 def eliminar_usuario():
@@ -137,7 +144,8 @@ def agregar_mensaje():
 @app.route("/editar_mensaje/<int:id>", methods=["GET","POST"])
 def editar_mensaje(id):
     blog = Blog.query.get_or_404(id)
-    if blog.usuario != session["usuario"]:
+    usuario = User.query.filter_by(usuario=session["usuario"]).first()
+    if blog.usuario_id != usuario.id:
         abort(404)
     blogForm = BlogForm(obj=blog)
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
