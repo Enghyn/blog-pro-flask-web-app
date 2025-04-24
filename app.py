@@ -11,9 +11,9 @@ PASS_DB = "admin"
 URL_DB = "localhost"
 NAME_DB = "blog_flask_db"
 FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
-msj = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
+render_external_url = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = FULL_URL_DB
+app.config["SQLALCHEMY_DATABASE_URI"] = render_external_url
 
 
 
