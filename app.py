@@ -12,7 +12,7 @@ app = Flask(__name__)
 #NAME_DB = "blog_flask_db"
 #FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://blog_pro_5toj_user:fAV5y3fEdxo1k9Q6s5OW9ulTrYtzl7kW@dpg-d04lejqdbo4c73eng2vg-a.oregon-postgres.render.com/blog_pro_5toj"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
 
 
 
