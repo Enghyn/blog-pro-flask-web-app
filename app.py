@@ -77,11 +77,15 @@ def editar_usuario(data):
     if request.method == "POST":
         if usuarioForm.validate_on_submit():
             usuarioForm.populate_obj(usuario)
+            usuario_existente = User.query.filter_by(usuario=usuario.usuario).first()
+            if usuario_existente is not None:
+                error_usuario = "Usuario ya existente"
+                return render_template("editar_nombre.html", form=usuarioForm, error=error_usuario)
             db.session.commit()
             session["usuario"] = usuario.usuario
         return redirect(url_for("ver_usuario"))
     if data == "nombre":
-        return render_template("editar_nombre.html", form=usuarioForm)
+        return render_template("editar_nombre.html", form=usuarioForm, error=error_usuario)
     elif data == "contraseña":
         return render_template("editar_contraseña.html", form=usuarioForm)
     return abort(404)

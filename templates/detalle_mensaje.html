@@ -32,7 +32,7 @@
                         <a href="{{ url_for('inicio') }}" class="btn btn-secondary btn-sm rounded-pill fw-semibold shadow-sm">
                             ← Regresar
                         </a>
-                    {%if usuario.usuario == blog.autor.usuario%}
+                    {%if usuario.id == blog.autor.id%}
                         <a href="#" class="btn btn-warning">Editar</a>
                         <a href="#" class="btn btn-danger">Eliminar</a>
                     {%endif%}

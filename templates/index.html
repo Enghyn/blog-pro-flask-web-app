@@ -37,7 +37,7 @@
                 </p>
                 <p class="card-text">{{ blog.cuerpo[:200] }}...</p>
                 <a href="/detalle_mensaje/{{ blog.id }}" class="btn btn-primary btn-sm">Ver más</a>
-                {% if usuario.usuario == blog.autor.usuario %}
+                {% if usuario.id == blog.autor.id %}
                   <a href="/editar_mensaje/{{blog.id}}" class="btn btn-warning btn-sm">Editar</a>
                   <a href="/eliminar_mensaje/{{blog.id}}" class="btn btn-danger btn-sm">Eliminar</a>
                 {% endif %}
