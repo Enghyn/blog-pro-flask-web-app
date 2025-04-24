@@ -74,6 +74,7 @@ def editar_usuario(data):
     if not usuario:
         return abort(404)
     usuarioForm = UserForm(obj=usuario)
+    error_usuario = None
     if request.method == "POST":
         if usuarioForm.validate_on_submit():
             usuarioForm.populate_obj(usuario)
