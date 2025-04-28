@@ -63,17 +63,18 @@
                 {% for comentario in comentarios %}
                     <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
                         <div class="card-body py-2 px-3">
-                            <div class="d-flex justify-content-between">
-                                <strong class="text-info">
-                                    <img src="{{ url_for('static', filename=comentario.autor.foto) }}" alt="foto_usuario">
-                                    <span>
-                                        {{ comentario.autor.usuario }}</strong>
-                                    </span>
+                            <div class="d-flex align-items-center mb-1">
+                                <img src="{{ url_for('static', filename=comentario.autor.foto) }}"
+                                    alt="foto_usuario"
+                                    class="rounded-circle me-2"
+                                    style="width: 30px; height: 30px; object-fit: cover;">
+                                <strong class="text-info mb-0">{{ comentario.autor.usuario }}</strong>
                             </div>
                             <p class="mb-0 small text-muted">{{ comentario.cuerpo }}</p>
                         </div>
                     </div>
                 {% endfor %}
+
             </div>
         </div>
     </div>
