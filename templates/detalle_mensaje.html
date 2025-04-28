@@ -1,77 +1,79 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Detalle Mensaje</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    </head>
-    <body>
-        <header class="bg-secondary py-3">
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h1 class="h4 mb-0 text-white">Blog pro</h1>
-                    <a href="{{ url_for('inicio') }}" class="btn btn-light btn-sm rounded-pill fw-semibold shadow-sm">
-                      ← Volver al inicio
-                    </a>
-                </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalle Mensaje</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+    <header class="bg-secondary py-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h4 mb-0 text-white">Blog pro</h1>
+                <a href="{{ url_for('inicio') }}" class="btn btn-light btn-sm rounded-pill fw-semibold shadow-sm">
+                    ← Volver al inicio
+                </a>
             </div>
-        </header>
-        <div class="container my-5">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-10 col-lg-8">
+        </div>
+    </header>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
                 <div class="card shadow">
                     <div class="card-body">
-                    <h5 class="card-title text-center">{{ blog.titulo }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted text-center">
-                        Publicado por {{ blog.usuario }} el {{ blog.fecha.strftime('%d/%m/%Y') }}
-                    </h6>
-                    <hr>
-                    <p class="card-text">{{ blog.cuerpo }}</p>
-                    <div class="text-center mt-4">
-                        <a href="{{ url_for('inicio') }}" class="btn btn-secondary btn-sm rounded-pill fw-semibold shadow-sm">
-                            ← Regresar
-                        </a>
-                    {%if usuario.id == blog.autor.id%}
-                        <a href="#" class="btn btn-warning">Editar</a>
-                        <a href="#" class="btn btn-danger">Eliminar</a>
-                    {%endif%}
+                        <h5 class="card-title text-center">{{ blog.titulo }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted text-center">
+                            <!-- Foto del autor antes del nombre -->
+                            <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
+                            Publicado por <strong>{{ blog.autor.usuario }}</strong> el {{ blog.fecha.strftime('%d/%m/%Y') }}
+                        </h6>
+                        <hr>
+                        <p class="card-text">{{ blog.cuerpo }}</p>
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('inicio') }}" class="btn btn-secondary btn-sm rounded-pill fw-semibold shadow-sm">
+                                ← Regresar
+                            </a>
+                            {% if usuario.id == blog.autor.id %}
+                                <a href="#" class="btn btn-warning">Editar</a>
+                                <a href="#" class="btn btn-danger">Eliminar</a>
+                            {% endif %}
+                        </div>
                     </div>
-                    </div>
-                </div>
                 </div>
             </div>
         </div>
-        <div class="container my-4">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-10 col-lg-8">
-                    <div class="card mt-4 shadow-sm my-3">
-                        <div class="card-body">
-                            <form action="#" method="POST">
-                                {{cform.csrf_token}}
-                                <div class="mb-3">
-                                    {{cform.cuerpo.label(class="form-label")}}
-                                    {{cform.cuerpo(class="form-control", rows="3", style="resize: none;")}}
-                                </div>
-                                <button type="submit" class="btn btn-outline-primary btn-sm fw-semibold">
-                                    + Agregar Comentario
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    {% for comentario in comentarios %}
-                        <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
-                            <div class="card-body py-2 px-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong class="text-info">{{ comentario.autor.usuario }}</strong>
-                                </div>
-                                <p class="mb-0 small text-muted">{{ comentario.cuerpo }}</p>
+    </div>
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card mt-4 shadow-sm my-3">
+                    <div class="card-body">
+                        <form action="#" method="POST">
+                            {{cform.csrf_token}}
+                            <div class="mb-3">
+                                {{cform.cuerpo.label(class="form-label")}}
+                                {{cform.cuerpo(class="form-control", rows="3", style="resize: none;")}}
                             </div>
-                        </div>
-                    {% endfor %}
+                            <button type="submit" class="btn btn-outline-primary btn-sm fw-semibold">
+                                + Agregar Comentario
+                            </button>
+                        </form>
+                    </div>
                 </div>
+                {% for comentario in comentarios %}
+                    <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex justify-content-between">
+                                <strong class="text-info">{{ comentario.autor.usuario }}</strong>
+                            </div>
+                            <p class="mb-0 small text-muted">{{ comentario.cuerpo }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-    </body>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+</body>
 </html>

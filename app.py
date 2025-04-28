@@ -6,6 +6,9 @@ from forms import UserForm, BlogForm, ComentarioForm
 from datetime import date
 from flask_mail import Mail, Message
 import secrets
+import os
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 USER_DB = "postgres"
@@ -15,7 +18,7 @@ NAME_DB = "blog_flask_db"
 FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
 render_external_url = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = FULL_URL_DB
+app.config["SQLALCHEMY_DATABASE_URI"] = render_external_url
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -23,6 +26,11 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'blogpro882@gmail.com'
 app.config['MAIL_PASSWORD'] = 'tfvh gfth paiv ntav'
 app.config['MAIL_DEFAULT_SENDER'] = 'blogpro882@gmail.com'
+
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'img')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 mail = Mail(app)
 
@@ -120,6 +128,9 @@ def editar_nombre():
             usuarioForm.populate_obj(usuario)
             db.session.commit()
             session["usuario"] = usuario.usuario
+            msg = Message("Código de verificación", sender="blogpro882@gmail.com", recipients=[usuario.email])
+            msg.body = f"Tu nombre de usuario se vió modificado."
+            mail.send(msg)
             return redirect(url_for("ver_usuario"))
         error_usuario = "Usuario ya existente"
     return render_template("editar_nombre.html", form=usuarioForm, error=error_usuario)
@@ -133,12 +144,37 @@ def editar_contraseña():
     if request.method == "POST" and usuarioForm.validate_on_submit():
         usuarioForm.populate_obj(usuario)
         db.session.commit()
+        msg = Message("Código de verificación", sender="blogpro882@gmail.com", recipients=[usuario.email])
+        msg.body = f"Tu contraseña se vió modificada."
+        mail.send(msg)
         return redirect(url_for("ver_usuario"))
     return render_template("editar_contraseña.html", form=usuarioForm)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/editar_foto", methods=["GET","POST"])
+def editar_foto():
+    usuario = User.query.filter_by(usuario=session["usuario"]).first()
+    if request.method == "POST":
+        file = request.files.get('foto')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            usuario.foto = f"img/{filename}"
+            db.session.commit()
+            return redirect(url_for("ver_usuario"))
+    return render_template("editar_foto.html")
 
 @app.route("/eliminar_usuario")
 def eliminar_usuario():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
+    if usuario.foto != "img/foto_default.jpg":
+        foto_path = os.path.join(app.root_path, 'static', usuario.foto)
+        if os.path.exists(foto_path):
+            os.remove(foto_path)
     db.session.delete(usuario)
     db.session.commit()
     session.pop("usuario", None)

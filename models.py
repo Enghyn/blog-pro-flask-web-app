@@ -6,6 +6,7 @@ class User(db.Model):
     usuario = db.Column(db.String(50))
     contraseña = db.Column(db.String(255))
     email = db.Column(db.String(120), nullable=True)
+    foto = db.Column(db.String(255), default="img/foto_default.jpg")
     codigo_verificacion = db.Column(db.String(10), nullable=True)
     is_verified = db.Column(db.Boolean, default=False)
     creado_en = db.Column(db.DateTime, default=datetime.utcnow)

@@ -5,6 +5,13 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Inicio</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+      <style>
+        .img-user {
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+        }
+      </style>
     </head>
     <body class="bg-light">
       <header class="bg-secondary py-3">
@@ -17,7 +24,7 @@
               </a>
             </div>
             <a href="/ver_usuario" class="btn btn-light btn-sm rounded-pill fw-semibold shadow-sm">
-              👤 {{ usuario.usuario }}
+              <img src="{{ url_for('static', filename=usuario.foto) }}" alt="foto_usuario" class="img-user rounded-circle me-2"> {{ usuario.usuario }}
             </a>
           </div>
         </div>
@@ -26,24 +33,26 @@
       <div class="container mt-4">
         <div class="row">
           {% for blog in blogs %}
-          <div class="col-12 mb-4">
-            <div class="card shadow-sm p-3">
-              <div class="card-body">
-                <h5 class="card-title">{{ blog.titulo }}</h5>
-                <p class="card-text text-muted small mb-2">
-                  Por <strong>{{ blog.autor.usuario }}</strong> • 
-                  <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
-                  <span>comentarios: {{ blog.comentarios | length }}</span>
-                </p>
-                <p class="card-text">{{ blog.cuerpo[:200] }}...</p>
-                <a href="/detalle_mensaje/{{ blog.id }}" class="btn btn-primary btn-sm">Ver más</a>
-                {% if usuario.id == blog.autor.id %}
-                  <a href="/editar_mensaje/{{blog.id}}" class="btn btn-warning btn-sm">Editar</a>
-                  <a href="/eliminar_mensaje/{{blog.id}}" class="btn btn-danger btn-sm">Eliminar</a>
-                {% endif %}
+            <div class="col-12 mb-4">
+              <div class="card shadow-sm p-3">
+                <div class="card-body">
+                  <h5 class="card-title">{{ blog.titulo }}</h5>
+                  <p class="card-text text-muted small mb-2">
+                    <!-- Foto del autor antes del nombre -->
+                    <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
+                    <strong>{{ blog.autor.usuario }}</strong> • 
+                    <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
+                    <span>comentarios: {{ blog.comentarios | length }}</span>
+                  </p>
+                  <p class="card-text">{{ blog.cuerpo[:200] }}...</p>
+                  <a href="/detalle_mensaje/{{ blog.id }}" class="btn btn-primary btn-sm">Ver más</a>
+                  {% if usuario.id == blog.autor.id %}
+                    <a href="/editar_mensaje/{{blog.id}}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="/eliminar_mensaje/{{blog.id}}" class="btn btn-danger btn-sm">Eliminar</a>
+                  {% endif %}
+                </div>
               </div>
             </div>
-          </div>
           {% endfor %}
         </div>
       </div>
