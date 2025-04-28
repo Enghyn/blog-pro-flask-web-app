@@ -1,9 +1,14 @@
 from database import db
+from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    usuario = db.Column(db.String(30))
-    contraseña = db.Column(db.String(30))
+    usuario = db.Column(db.String(50))
+    contraseña = db.Column(db.String(255))
+    email = db.Column(db.String(120), nullable=True)
+    codigo_verificacion = db.Column(db.String(10), nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
+    creado_en = db.Column(db.DateTime, default=datetime.utcnow)
     blogs = db.relationship("Blog", backref="autor", lazy=True)
     comentarios = db.relationship("Comentario", backref="autor", lazy=True)
 

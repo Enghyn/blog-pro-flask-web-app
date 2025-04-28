@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from models import User, Blog, Comentario
 from forms import UserForm, BlogForm, ComentarioForm
 from datetime import date
+from flask_mail import Mail, Message
+import secrets
 
 app = Flask(__name__)
 USER_DB = "postgres"
@@ -13,9 +15,16 @@ NAME_DB = "blog_flask_db"
 FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
 render_external_url = "postgresql://blog_pro_sgdy_user:GvohOVd2gysovaDfKj5sbybx2S1i0fiG@dpg-d04omn1r0fns73cmq9f0-a.oregon-postgres.render.com/blog_pro_sgdy"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = render_external_url
+app.config["SQLALCHEMY_DATABASE_URI"] = FULL_URL_DB
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'blogpro882@gmail.com'
+app.config['MAIL_PASSWORD'] = 'tfvh gfth paiv ntav'
+app.config['MAIL_DEFAULT_SENDER'] = 'blogpro882@gmail.com'
 
+mail = Mail(app)
 
 db.init_app(app)
 
@@ -39,12 +48,16 @@ def inicio_sesion():
     usuario = User()
     usuarioForm = UserForm(obj=usuario)
     error_usuario = None
+    usuarioForm.email.data = "None"
     if request.method == "POST" and usuarioForm.validate_on_submit():
         usuarioForm.populate_obj(usuario)
         usuario_existente = User.query.filter_by(usuario=usuario.usuario).first()
         if usuario_existente and usuario_existente.contraseña == usuario.contraseña:
-            session["usuario"] = usuario.usuario
-            return redirect(url_for("inicio"))
+            if usuario_existente.is_verified:
+                session["usuario"] = usuario.usuario
+                return redirect(url_for("inicio"))
+            error_usuario = "Su cuenta no ha sido verificada aún."
+            return render_template("inicio_sesion.html", form=usuarioForm, error=error_usuario)
         error_usuario = "Usuario o contraseña incorrectos"
     return render_template("inicio_sesion.html", form=usuarioForm, error=error_usuario)
 
@@ -56,13 +69,38 @@ def registro():
     if request.method == "POST" and usuarioForm.validate_on_submit():
         usuarioForm.populate_obj(usuario)
         usuario_existente = User.query.filter_by(usuario=usuario.usuario).first()
-        if usuario_existente is None:
+        email_existente = User.query.filter_by(email=usuario.email).first()
+        if usuario_existente is None and email_existente is None:
+            codigo = secrets.token_hex(3).upper()
+            usuario.codigo_verificacion = codigo
+            usuario.is_verified = False
             db.session.add(usuario)
             db.session.commit()
-            session["usuario"] = usuario.usuario
-            return redirect(url_for("inicio"))
-        error_usuario = "Usuario ya existente"
+            session["usuario_email"] = usuario.email
+            msg = Message("Código de verificación", sender="blogpro882@gmail.com", recipients=[usuario.email])
+            msg.body = f"Tu código de verificación: {codigo}"
+            mail.send(msg)
+            return redirect(url_for("verificar_codigo"))
+        error_usuario = "Usuario o email ya existente"
     return render_template("registro.html", form=usuarioForm, error=error_usuario)
+
+@app.route("/verificar_codigo", methods=["GET", "POST"])
+def verificar_codigo():
+    error_codigo = None
+    if "usuario_email" not in session:
+        return redirect(url_for("inicio_sesion"))
+    if request.method == "POST":
+        codigo_ingresado = request.form.get("codigo")
+        usuario = User.query.filter_by(email=session["usuario_email"]).first()
+        if usuario and usuario.codigo_verificacion == codigo_ingresado:
+            usuario.is_verified = True
+            db.session.commit()
+            session["usuario"] = usuario.usuario
+            session.pop("usuario_email", None)
+            return redirect(url_for("inicio"))
+        else:
+            error_codigo = "Código incorrecto. Intenta de nuevo."
+    return render_template("verificar_codigo.html", error=error_codigo)
 
 @app.route("/ver_usuario")
 def ver_usuario():

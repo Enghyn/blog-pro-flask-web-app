@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, TextAreaField
+from wtforms import StringField, PasswordField, DateField, TextAreaField, EmailField
 from wtforms.validators import DataRequired
 
 class UserForm(FlaskForm):
     usuario = StringField("Usuario", validators=[DataRequired()])
     contraseña = PasswordField("Contraseña", validators=[DataRequired()])
+    email = EmailField("Email", validators=[DataRequired()])
 
 class BlogForm(FlaskForm):
     usuario = StringField("Usuario")
