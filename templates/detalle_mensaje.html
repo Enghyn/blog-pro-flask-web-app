@@ -65,7 +65,11 @@
                     <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
                         <div class="card-body py-2 px-3">
                             <div class="d-flex justify-content-between">
-                                <strong class="text-info">{{ comentario.autor.usuario }}</strong>
+                                <strong class="text-info">
+                                    <img src="{{ url_for('static', filename=comentario.autor.foto) }}" alt="foto_usuario">
+                                    <span>
+                                        {{ comentario.autor.usuario }}</strong>
+                                    </span>
                             </div>
                             <p class="mb-0 small text-muted">{{ comentario.cuerpo }}</p>
                         </div>

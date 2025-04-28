@@ -44,7 +44,11 @@
                     <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
                     <span>comentarios: {{ blog.comentarios | length }}</span>
                   </p>
-                  <p class="card-text">{{ blog.cuerpo[:200] }}...</p>
+                  <p class="card-text">{{ blog.cuerpo[:200] }}
+                    {%if blog.cuerpo|lenght > 200%}
+                    ...
+                    {%endif%}
+                  </p>
                   <a href="/detalle_mensaje/{{ blog.id }}" class="btn btn-primary btn-sm">Ver más</a>
                   {% if usuario.id == blog.autor.id %}
                     <a href="/editar_mensaje/{{blog.id}}" class="btn btn-warning btn-sm">Editar</a>
