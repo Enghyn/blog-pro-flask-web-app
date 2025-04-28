@@ -38,14 +38,14 @@
                 <div class="card-body">
                   <h5 class="card-title">{{ blog.titulo }}</h5>
                   <p class="card-text text-muted small mb-2">
-                    <!-- Foto del autor antes del nombre -->
+
                     <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
                     <strong>{{ blog.autor.usuario }}</strong> • 
                     <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
                     <span>comentarios: {{ blog.comentarios | length }}</span>
                   </p>
                   <p class="card-text">{{ blog.cuerpo[:200] }}
-                    {%if blog.cuerpo|lenght > 200%}
+                    {%if blog.cuerpo|length > 200%}
                     ...
                     {%endif%}
                   </p>

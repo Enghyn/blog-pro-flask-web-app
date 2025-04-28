@@ -24,7 +24,6 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ blog.titulo }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted text-center">
-                            <!-- Foto del autor antes del nombre -->
                             <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
                             Publicado por <strong>{{ blog.autor.usuario }}</strong> el {{ blog.fecha.strftime('%d/%m/%Y') }}
                         </h6>
