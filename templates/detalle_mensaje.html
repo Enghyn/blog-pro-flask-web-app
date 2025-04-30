@@ -53,6 +53,8 @@
                             <div class="mb-3">
                                 {{cform.cuerpo.label(class="form-label")}}
                                 {{cform.cuerpo(class="form-control", rows="3", style="resize: none;")}}
+                                <small id="charCountComentario" class="form-text text-muted">0 / 1000 caracteres</small>
+                                <small id="charWarningComentario" class="form-text text-danger d-none">⚠️ Has superado el límite de 1000 caracteres.</small>
                             </div>
                             <button type="submit" class="btn btn-outline-primary btn-sm fw-semibold">
                                 + Agregar Comentario
@@ -79,5 +81,37 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const comentarioInput = document.querySelector("#{{ cform.cuerpo.id }}");
+          const charCountComentario = document.getElementById("charCountComentario");
+          const charWarningComentario = document.getElementById("charWarningComentario");
+          const formComentario = comentarioInput.closest("form");
+        
+          function updateCommentCount() {
+            const length = comentarioInput.value.length;
+            charCountComentario.textContent = `${length} / 1000 caracteres`;
+        
+            if (length > 1000) {
+              charCountComentario.classList.add("text-danger");
+              charWarningComentario.classList.remove("d-none");
+            } else {
+              charCountComentario.classList.remove("text-danger");
+              charWarningComentario.classList.add("d-none");
+            }
+          }
+        
+          updateCommentCount();
+        
+          comentarioInput.addEventListener("input", updateCommentCount);
+        
+          formComentario.addEventListener("submit", function (e) {
+            if (comentarioInput.value.length > 1000) {
+              e.preventDefault();
+              comentarioInput.focus();
+            }
+          });
+        });
+    </script>        
 </body>
 </html>
