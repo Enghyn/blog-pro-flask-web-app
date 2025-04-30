@@ -18,9 +18,8 @@ PASS_DB = "admin"
 URL_DB = "localhost"
 NAME_DB = "blog_flask_db"
 FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
-render_external_url = "postgresql://blog_flask_db_g00z_user:AmngGQVazl1pjcyu2VLSYqCNKE8cfL6r@dpg-d07uq56r433s73blmqa0-a.oregon-postgres.render.com/blog_flask_db_g00z"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = render_external_url
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("EXTERNAL_DATABASE_URL")
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
