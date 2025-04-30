@@ -27,7 +27,9 @@
                 <div class="mb-3">
                     {{ form.cuerpo.label(class="form-label") }}
                     {{ form.cuerpo(class="form-control", rows="8", style="resize: vertical;", placeholder="Escribí tu mensaje acá...") }}
-                </div>
+                    <small id="charCountMensaje" class="form-text text-muted">0 / 1000 caracteres</small>
+                    <small id="charWarningMensaje" class="form-text text-danger d-none">⚠️ Has superado el límite de 1000 caracteres.</small>
+                  </div>
 
                 <div class="d-flex justify-content-between mt-4">
                   <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary">← Regresar</a>
@@ -41,5 +43,37 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const mensajeInput = document.querySelector("#{{ form.cuerpo.id }}");
+        const charCountMensaje = document.getElementById("charCountMensaje");
+        const charWarningMensaje = document.getElementById("charWarningMensaje");
+        const formMensaje = mensajeInput.closest("form");
+      
+        function updateMensajeCount() {
+          const length = mensajeInput.value.length;
+          charCountMensaje.textContent = `${length} / 1000 caracteres`;
+      
+          if (length > 1000) {
+            charCountMensaje.classList.add("text-danger");
+            charWarningMensaje.classList.remove("d-none");
+          } else {
+            charCountMensaje.classList.remove("text-danger");
+            charWarningMensaje.classList.add("d-none");
+          }
+        }
+      
+        updateMensajeCount();
+      
+        mensajeInput.addEventListener("input", updateMensajeCount);
+      
+        formMensaje.addEventListener("submit", function (e) {
+          if (mensajeInput.value.length > 1000) {
+            e.preventDefault();
+            mensajeInput.focus();
+          }
+        });
+      });
+    </script>      
   </body>
 </html>
