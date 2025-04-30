@@ -19,6 +19,7 @@ URL_DB = "localhost"
 NAME_DB = "blog_flask_db"
 FULL_URL_DB = f"postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}"
 
+load_dotenv()
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("EXTERNAL_DATABASE_URL")
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -30,7 +31,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'blogpro882@gmail.com'
 
 mail = Mail(app)
 
-load_dotenv()
+
 cloudinary.config(
     cloud_name = os.getenv("CLOUD_NAME"),
     api_key = os.getenv("CLOUD_API_KEY"),
