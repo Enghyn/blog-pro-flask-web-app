@@ -53,7 +53,7 @@
                     <h5 class="card-title">
                         <span class="me-2">Información del Usuario</span>
                         <a href="/editar_foto" class="img-edit-link position-relative d-inline-block">
-                          <img src="{{ url_for('static', filename=usuario.foto) }}" alt="foto_usuario" class="img-user rounded-circle">
+                          <img src="{{usuario.foto}}" alt="foto_usuario" class="img-user rounded-circle">
                           <i class="fa-solid fa-pen edit-icon position-absolute top-50 start-50 translate-middle text-white"></i>
                         </a>
                     </h5>

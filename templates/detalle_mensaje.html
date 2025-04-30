@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ blog.titulo }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted text-center">
-                            <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
+                            <img src="{{blog.autor.foto}}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
                             Publicado por <strong>{{ blog.autor.usuario }}</strong> el {{ blog.fecha.strftime('%d/%m/%Y') }}
                         </h6>
                         <hr>
@@ -64,7 +64,7 @@
                     <div class="card mb-3 shadow-sm border-start border-3 border-info bg-light">
                         <div class="card-body py-2 px-3">
                             <div class="d-flex align-items-center mb-1">
-                                <img src="{{ url_for('static', filename=comentario.autor.foto) }}"
+                                <img src="{{comentario.autor.foto}}"
                                     alt="foto_usuario"
                                     class="rounded-circle me-2"
                                     style="width: 30px; height: 30px; object-fit: cover;">

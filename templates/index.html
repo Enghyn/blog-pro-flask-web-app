@@ -24,7 +24,7 @@
               </a>
             </div>
             <a href="/ver_usuario" class="btn btn-light btn-sm rounded-pill fw-semibold shadow-sm">
-              <img src="{{ url_for('static', filename=usuario.foto) }}" alt="foto_usuario" class="img-user rounded-circle me-2"> {{ usuario.usuario }}
+              <img src="{{ usuario.foto}}" alt="foto_usuario" class="img-user rounded-circle me-2"> {{ usuario.usuario }}
             </a>
           </div>
         </div>
@@ -39,7 +39,7 @@
                   <h5 class="card-title">{{ blog.titulo }}</h5>
                   <p class="card-text text-muted small mb-2">
 
-                    <img src="{{ url_for('static', filename=blog.autor.foto) }}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
+                    <img src="{{blog.autor.foto}}" alt="Foto de {{ blog.autor.usuario }}" class="img-fluid rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">
                     <strong>{{ blog.autor.usuario }}</strong> • 
                     <span>{{ blog.fecha.strftime('%d/%m/%Y') }}</span> • 
                     <span>comentarios: {{ blog.comentarios | length }}</span>

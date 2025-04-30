@@ -1,14 +1,16 @@
 from flask import Flask, render_template, url_for, redirect, request, session, abort
 from database import db, desc
 from flask_migrate import Migrate
-from models import User, Blog, Comentario
+from models import User, Blog, Comentario, foto_default_url
 from forms import UserForm, BlogForm, ComentarioForm
 from datetime import date
 from flask_mail import Mail, Message
 import secrets
 import os
-from werkzeug.utils import secure_filename
-
+import cloudinary
+from cloudinary.uploader import upload, destroy
+from dotenv import load_dotenv
+import re
 
 app = Flask(__name__)
 USER_DB = "postgres"
@@ -27,12 +29,17 @@ app.config['MAIL_USERNAME'] = 'blogpro882@gmail.com'
 app.config['MAIL_PASSWORD'] = 'tfvh gfth paiv ntav'
 app.config['MAIL_DEFAULT_SENDER'] = 'blogpro882@gmail.com'
 
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'img')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 mail = Mail(app)
+
+load_dotenv()
+cloudinary.config(
+    cloud_name = os.getenv("CLOUD_NAME"),
+    api_key = os.getenv("CLOUD_API_KEY"),
+    api_secret = os.getenv("CLOUD_API_SECRET"),
+    secure = True
+)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', "webp"}
 
 db.init_app(app)
 
@@ -158,23 +165,26 @@ def allowed_file(filename):
 def editar_foto():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
     if request.method == "POST":
-        file = request.files.get('foto')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            usuario.foto = f"img/{filename}"
+        archivo = request.files.get('foto')
+        if archivo and allowed_file(archivo.filename):
+            foto = upload(archivo, folder="fotos_perfil")
+            foto_url = foto.get("secure_url")
+            usuario.foto = foto_url
             db.session.commit()
             return redirect(url_for("ver_usuario"))
     return render_template("editar_foto.html")
 
+def obtener_id(url):
+    match = re.search(r"/upload/.*/(.+)\.(jpg|jpeg|png|webp)", url)
+    return match.group(1) if match else None
+
 @app.route("/eliminar_usuario")
 def eliminar_usuario():
     usuario = User.query.filter_by(usuario=session["usuario"]).first()
-    if usuario.foto != "img/foto_default.jpg":
-        foto_path = os.path.join(app.root_path, 'static', usuario.foto)
-        if os.path.exists(foto_path):
-            os.remove(foto_path)
+    if usuario.foto and usuario.foto != foto_default_url:
+        id_foto_usuario = obtener_id(usuario.foto)
+        if id_foto_usuario:
+            destroy(f"fotos_perfil/{id_foto_usuario}")
     db.session.delete(usuario)
     db.session.commit()
     session.pop("usuario", None)
